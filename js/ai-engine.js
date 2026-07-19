@@ -35,7 +35,7 @@ function calcScore(sig) {
 /**
  * 历史类比引擎 — 计算与15城历史案例的信号相似度
  * @param {Object} signals - 当前城市的五信号
- * @returns {{city: Object, similarity: number}} 最相似的历史城市及相似度
+ * @returns {Object} {city: Object, similarity: number} 最相似的历史城市及相似度
  */
 function findMatch(signals) {
   let best = null, bestDist = Infinity;

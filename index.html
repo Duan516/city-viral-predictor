@@ -133,8 +133,9 @@
   <div style="margin-top:4px">分析方法：五信号融合打分 + LLM叙事分析 + XGBoost分类 + 历史模式类比</div>
 </footer>
 
-<!-- 第三方库 -->
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<!-- 第三方库（BootCDN国内优先 + jsdelivr备用） -->
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script>if(typeof echarts==='undefined'){document.write('<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"><\/script>');}</script>
 <!-- 地图数据（内嵌GeoJSON，离线可用） -->
 <script src="js/china-geo.js"></script>
 <!-- 数据层 -->
