@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if build tools added later)
+node_modules/
+
+# Python (if backend added later)
+__pycache__/
+*.pyc
+.venv/

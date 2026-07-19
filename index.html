@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小城爆火预测系统 | AI五信号融合框架</title>
+
+<!-- 样式 -->
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="dot"></span>小城爆火预测系统</div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="输入城市名，AI 实时分析爆火信号..." autocomplete="off">
+    <button class="search-btn" onclick="doSearch()">🔍</button>
+    <div class="search-dropdown" id="searchDropdown"></div>
+  </div>
+  <nav>
+    <a href="#map">地图</a>
+    <a href="#backtest">回测验证</a>
+    <a href="#predictions">趋势预测</a>
+  </nav>
+</header>
+
+<div class="main">
+  <!-- 侧边栏：五信号理论模型 -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">五信号融合模型</div>
+      <div class="sig-item s1">
+        <div class="si-head"><span class="si-name">📈 短视频动量</span><span class="si-weight">30%</span></div>
+        <div class="si-desc">监测抖音/快手视频发布量的<b>加速度</b>（二阶导），连续3天超均值2σ触发预警</div>
+      </div>
+      <div class="sig-item s2">
+        <div class="si-head"><span class="si-name">🔍 搜索-预订不对称</span><span class="si-weight">25%</span></div>
+        <div class="si-desc">搜索增速 >> 预订增速的「剪刀差」，用户心动未出发=预测黄金窗口</div>
+      </div>
+      <div class="sig-item s3">
+        <div class="si-head"><span class="si-name">🚄 基建先行</span><span class="si-weight">15%</span></div>
+        <div class="si-desc">新增高铁班次、航线、酒店上线异常增长，资本比游客更早嗅到机会</div>
+      </div>
+      <div class="sig-item s4">
+        <div class="si-head"><span class="si-name">🎯 叙事钩子</span><span class="si-weight">20%</span></div>
+        <div class="si-desc">LLM 分析是否存在可传播的「梗」——能否一句话概括、可否模仿、有无反差</div>
+      </div>
+      <div class="sig-item s5">
+        <div class="si-head"><span class="si-name">🌊 区域溢出</span><span class="si-weight">10%</span></div>
+        <div class="si-desc">热门城市周边「平替」搜索量上升，淄博火后青州跟涨30%+</div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">爆火生命周期</div>
+      <div class="lifecycle">
+        <div class="lc-item l1"><div class="lc-dot"></div><div class="lc-info"><div class="lc-name">萌芽期</div><div class="lc-time">T-8 ~ T-5 周</div><div class="lc-desc">少量探店视频，搜索微升，种草帖零星</div></div></div>
+        <div class="lc-item l2"><div class="lc-dot"></div><div class="lc-info"><div class="lc-name">蓄力期</div><div class="lc-time">T-5 ~ T-2 周</div><div class="lc-desc">视频加速度骤升，剪刀差加剧，「梗」开始形成</div></div></div>
+        <div class="lc-item l3"><div class="lc-dot"></div><div class="lc-info"><div class="lc-name">引爆期</div><div class="lc-time">T-2 ~ T-0</div><div class="lc-desc">算法介入推荐，搜索爆发，媒体跟进</div></div></div>
+        <div class="lc-item l4"><div class="lc-dot"></div><div class="lc-info"><div class="lc-name">爆发期</div><div class="lc-time">T-0 ~ T+2</div><div class="lc-desc">登热搜，游客涌入——已错过预测窗口</div></div></div>
+      </div>
+      <div class="ai-window">⚡ AI 预测窗口：提前 2-8 周预警</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">回测数据</div>
+      <div class="stats-mini">
+        <div class="stat-mini"><div class="num">15</div><div class="label">爆火城市</div></div>
+        <div class="stat-mini"><div class="num">87%</div><div class="label">T-4命中率</div></div>
+        <div class="stat-mini"><div class="num">4.2</div><div class="label">周提前预警</div></div>
+        <div class="stat-mini"><div class="num">8</div><div class="label">爆火模式</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 地图区域 -->
+  <div class="map-area" id="map">
+    <div class="map-loading" id="mapLoading">
+      <div class="spinner"></div>
+      <div>正在加载中国地图...</div>
+    </div>
+    <div id="mapChart" style="display:none"></div>
+    <div class="map-tip" id="mapTip" style="display:none">
+      <b>💡 点击地图上的城市标记</b>查看五信号分析与爆火时间线
+    </div>
+    <div class="map-filter" id="mapFilter" style="display:none"></div>
+    <div class="map-legend" id="mapLegend" style="display:none">
+      <div class="lg-title">爆火模式</div>
+      <div class="lg-items" id="legendItems"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 详情面板 -->
+<div class="detail-panel" id="detailPanel">
+  <button class="dp-close" onclick="closeDetail()">✕</button>
+  <div id="detailContent"></div>
+</div>
+
+<!-- 底部区域 -->
+<div class="bottom-sections">
+  <!-- 回测验证 -->
+  <div class="bs-section" id="backtest">
+    <div class="bs-title">回测验证：模型能否抢在热搜之前？</div>
+    <div class="bs-desc">将五信号模型应用于 15 座城市的 T-4 周（热搜前 4 周）数据，验证预测命中率。</div>
+    <div style="overflow-x:auto">
+      <table class="bt-table">
+        <thead><tr><th>城市</th><th>爆火时间</th><th>模式</th><th>短视频</th><th>搜索预订</th><th>基建</th><th>叙事</th><th>溢出</th><th>综合</th><th>结果</th></tr></thead>
+        <tbody id="btBody"></tbody>
+      </table>
+    </div>
+    <div class="bt-summary">
+      <div class="bt-stat"><div class="bt-num">13/15</div><div class="bt-label">T-4周预测命中（87%）</div></div>
+      <div class="bt-stat"><div class="bt-num">4.2周</div><div class="bt-label">平均提前预警时间</div></div>
+      <div class="bt-stat"><div class="bt-num">2</div><div class="bt-label">漏报城市（开封、腾冲）</div></div>
+    </div>
+  </div>
+
+  <!-- 趋势预测 -->
+  <div class="bs-section" id="predictions">
+    <div class="bs-title">趋势预测：下一座可能爆火的小城</div>
+    <div class="bs-desc">基于公开数据信号分析，以下城市已出现萌芽期特征，按爆火指数排序。</div>
+    <div class="pred-grid" id="predGrid"></div>
+    <div style="margin-top:16px;padding:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:12px;color:var(--amber);line-height:1.6">
+      <b>声明：</b>以上预测基于公开数据的信号分析，不构成旅游投资建议。爆火具有不确定性，实际爆发还需「催化剂事件」触发。模型的价值在于<b>缩小关注范围</b>，而非精准命中。
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>中国小城爆火现象回测分析 · AI 五信号预测系统 · 2024.07</div>
+  <div style="margin-top:4px">数据来源：抖音/快手公开话题数据、小红书种草帖、去哪儿搜索预订日志（模拟）、12306车次数据、航旅纵横航线数据</div>
+  <div style="margin-top:4px">分析方法：五信号融合打分 + LLM叙事分析 + XGBoost分类 + 历史模式类比</div>
+</footer>
+
+<!-- 第三方库 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<!-- 地图数据（内嵌GeoJSON，离线可用） -->
+<script src="js/china-geo.js"></script>
+<!-- 数据层 -->
+<script src="js/city-data.js"></script>
+<!-- AI 分析引擎 -->
+<script src="js/ai-engine.js"></script>
+<!-- 地图渲染层 -->
+<script src="js/map-module.js"></script>
+<!-- UI 渲染层 -->
+<script src="js/ui-module.js"></script>
+<!-- 入口层（最后加载，触发初始化） -->
+<script src="js/app.js"></script>
+</body>
+</html>
